@@ -1,0 +1,1 @@
+# unity-auto-attach-component-attributes
