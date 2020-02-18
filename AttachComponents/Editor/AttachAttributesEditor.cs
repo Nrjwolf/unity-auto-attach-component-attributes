@@ -39,6 +39,27 @@ public class GetComponentAttributeEditor : PropertyDrawer
     }
 }
 
+/// AddComponent
+[CustomPropertyDrawer(typeof(AddComponentAttribute))]
+public class AddComponentAttributeEditor : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        // Default draw
+        EditorGUI.PropertyField(position, property, label, true);
+
+        // AddComponent
+        property.serializedObject.Update();
+        if (property.objectReferenceValue == null)
+        {
+            var type = property.GetPropertyType().StringToType();
+            var go = ((MonoBehaviour)(property.serializedObject.targetObject)).gameObject;
+            property.objectReferenceValue = go.AddComponent(type);
+        }
+        property.serializedObject.ApplyModifiedProperties();
+    }
+}
+
 /// FindObjectOfType
 [CustomPropertyDrawer(typeof(FindObjectOfTypeAttribute))]
 public class FindObjectOfTypeAttributeEditor : PropertyDrawer
