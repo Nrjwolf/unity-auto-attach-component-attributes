@@ -1,4 +1,4 @@
-# Unity auto attach component with attributes
+# Unity auto attach component via attributes
 
 Example
 ``` c#
