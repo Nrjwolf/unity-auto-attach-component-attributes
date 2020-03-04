@@ -7,6 +7,9 @@ Example
  
  [GetComponent] 
  [SerializeField] private Image m_Image;
+ 
+ [AddComponent] // Add component in editor and attach it to field
+ [SerializeField] private SpringJoint2D m_SpringJoint2D;
 ```
 
 Now all components will automatically attach when you select your gameobject in hierarchy
