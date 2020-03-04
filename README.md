@@ -9,7 +9,7 @@ Example
  [SerializeField] private Image m_Image;
  
  [GetComponentInChildren(true)] // include inactive
- [SerializeField] private SpringJoint2D m_SpringJoint2D;
+ [SerializeField] private Button m_Button;
  
  [AddComponent] // Add component in editor and attach it to field
  [SerializeField] private SpringJoint2D m_SpringJoint2D;
