@@ -24,18 +24,18 @@ namespace Nrjwolf.Attributes.Editor
 
         public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, Action<GameObject, Type> func)
         {
-            bool isPropertyValuuNull = property.objectReferenceValue == null;
+            bool isPropertyValueNull = property.objectReferenceValue == null;
 
             // Change gui color
             var prevColor = GUI.color;
-            GUI.color = isPropertyValuuNull ? AttachAttributesEditor.GUIColorNull : AttachAttributesEditor.GUIColorDefault;
+            GUI.color = isPropertyValueNull ? AttachAttributesEditor.GUIColorNull : AttachAttributesEditor.GUIColorDefault;
 
             // Default draw
             EditorGUI.PropertyField(position, property, label, true);
 
             // GetComponentInChildren
             property.serializedObject.Update();
-            if (isPropertyValuuNull)
+            if (isPropertyValueNull)
             {
                 var type = property.GetPropertyType().StringToType();
                 var go = ((MonoBehaviour)(property.serializedObject.targetObject)).gameObject;
