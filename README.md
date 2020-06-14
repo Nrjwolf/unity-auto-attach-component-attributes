@@ -1,18 +1,39 @@
 # Unity auto attach component via attributes
 
+### Installation
+
+Add this as a package to your project by adding the below as an entry to the dependencies in the `/Packages/manifest.json` file:
+
+```json
+"com.nrjwolf.autoattachattributes": "https://github.com/Nrjwolf/unity-auto-attach-component-attributes.git"
+```
+For more information on adding git repositories as a package see the [Git support on Package Manager](https://docs.unity3d.com/Manual/upm-git.html) in the Unity Documentation.
+
+
 Example
 ``` c#
- [FindObjectOfType]
- [SerializeField] private Camera m_Camera;
- 
- [GetComponent] 
- [SerializeField] private Image m_Image;
- 
- [GetComponentInChildren(true)] // include inactive
- [SerializeField] private Button m_Button;
- 
- [AddComponent] // Add component in editor and attach it to field
- [SerializeField] private SpringJoint2D m_SpringJoint2D;
+using UnityEngine;
+using UnityEngine.UI;
+using Nrjwolf.Attributes;
+
+public class AttachAttributesExample : MonoBehaviour
+{
+    [FindObjectOfType]
+    [SerializeField]
+    private Camera m_Camera;
+
+    [GetComponent]
+    [SerializeField]
+    private Image m_Image;
+
+    [GetComponentInChildren(true)] // include inactive
+    [SerializeField]
+    private Button m_Button;
+
+    [AddComponent] // Add component in editor and attach it to field
+    [SerializeField]
+    private SpringJoint2D m_SpringJoint2D;
+}
 ```
 
 Now all components will automatically attach when you select your gameobject in hierarchy

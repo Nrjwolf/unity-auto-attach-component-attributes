@@ -1,0 +1,17 @@
+{
+    "name": "Nrjwolf.Attributes.Editor",
+    "references": [
+        "GUID:8952ac864110e4c40a7e7bb267947921"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

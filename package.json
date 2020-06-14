@@ -1,0 +1,12 @@
+{
+    "name": "com.nrjwolf.autoattachattributes",
+    "displayName": "Auto Attach Component Attributes",
+    "version": "1.0.0",
+    "unity": "2018.3",
+    "description": "Using these attributes, components will automatically attach when you select your gameobject in hierarchy.",
+    "author": {
+        "name": "Nrjwolf",
+        "email": "alexander@nrjwolf.games",
+        "url": "https://nrjwolf.games"
+    }
+}
