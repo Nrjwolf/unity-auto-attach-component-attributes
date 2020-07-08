@@ -1,5 +1,5 @@
 {
-    "name": "nrjwolf.tool.attachattributes",
+    "name": "nrjwolf.games.attachattributes",
     "version": "1.0.0",
     "displayName": "Attach Attributes",
     "description": "Use attach attributes to auto attach components.\n\nFor example \n\n[GetComponent] \n[SerializeField] private Image m_Image;\n\nNow all components will automatically attach when you select your gameobject in hierarchy",
