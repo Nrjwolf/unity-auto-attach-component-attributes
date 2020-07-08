@@ -1,6 +1,19 @@
 # Unity auto attach component via attributes
 
-Example
+### Installation
+
+Add this as a package to your project by adding the below as an entry to the dependencies in the `/Packages/manifest.json` file:
+
+```json
+"nrjwolf.games.attachattributes": "https://github.com/Nrjwolf/unity-auto-attach-component-attributes.git"
+```
+For more information on adding git repositories as a package see the [Git support on Package Manager](https://docs.unity3d.com/Manual/upm-git.html) in the Unity Documentation.
+
+### Preview video
+
+[![Play](https://img.youtube.com/vi/LdiJdgHrBl4/0.jpg)](https://www.youtube.com/watch?v=LdiJdgHrBl4)
+
+### Example
 ``` c#
  [FindObjectOfType]
  [SerializeField] private Camera m_Camera;
@@ -10,6 +23,9 @@ Example
  
  [GetComponentInChildren(true)] // include inactive
  [SerializeField] private Button m_Button;
+
+ [GetComponentInChildren("Buttons/Button1")] // Get the component from the children by path "Buttons/Button1" in hierarchy
+ [SerializeField] private Button m_Button;
  
  [AddComponent] // Add component in editor and attach it to field
  [SerializeField] private SpringJoint2D m_SpringJoint2D;
@@ -17,9 +33,14 @@ Example
 
 Now all components will automatically attach when you select your gameobject in hierarchy
 
----
+![](https://github.com/Nrjwolf/unity-auto-attach-component-attributes/blob/master/.github/images/globalSettingInContextMenu.png "Global active/deactive") </br>
+You can turn it on/off in component context menu or via ```Tools/Nrjwolf/AttachAttributes```
 
-So, you can ask why I need it? Maybe you use code like this and do not know, that this is bad for perfomance
+### About
+
+This asset help you to auto attach components into your serialized fields in inpector. I started use it to avoid every time assign components in ```Awake/Start``` 
+function. <br> <br>
+So, you can ask why I need it? Well, maybe you use code like this and do not know, that this is bad for perfomance
 ``` c#
 private Transform m_CachedTransform
 public Transform transform
@@ -36,7 +57,7 @@ You can read about here: https://blogs.unity3d.com/ru/2014/05/16/custom-operator
 
 ---
 
-You can cache via code for example in Start method or you can use drag and drop in editor. But you don't need to do this with this attributes.
-
-Reddit : https://www.reddit.com/r/Nrjwolf/    
-Telegram : https://t.me/nrjwolf_live 
+>Telegram : https://t.me/nrjwolf_live <br>
+>Discord : https://discord.gg/jwPVsat <br>
+>Reddit : https://www.reddit.com/r/Nrjwolf/ <br>
+>Twitter : https://twitter.com/nrjwolf <br>
