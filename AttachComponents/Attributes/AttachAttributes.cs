@@ -2,18 +2,27 @@
 using System;
 using UnityEngine;
 
-[AttributeUsage(System.AttributeTargets.Field)] public class GetComponentAttribute : PropertyAttribute { }
+[AttributeUsage(System.AttributeTargets.Field)] public class GetComponentAttribute : AttachPropertyAttribute { }
 
 [AttributeUsage(System.AttributeTargets.Field)]
-public class GetComponentInChildrenAttribute : PropertyAttribute
+public class GetComponentInChildrenAttribute : AttachPropertyAttribute
 {
     public bool IncludeInactive { get; private set; }
+    public string ChildName;
 
-    public GetComponentInChildrenAttribute(bool includeInactive)
+    public GetComponentInChildrenAttribute(bool includeInactive = false)
     {
         IncludeInactive = includeInactive;
     }
+
+    public GetComponentInChildrenAttribute(string childName)
+    {
+        ChildName = childName;
+    }
 }
 
-[AttributeUsage(System.AttributeTargets.Field)] public class AddComponentAttribute : PropertyAttribute { }
-[AttributeUsage(System.AttributeTargets.Field)] public class FindObjectOfTypeAttribute : PropertyAttribute { }
+[AttributeUsage(System.AttributeTargets.Field)] public class AddComponentAttribute : AttachPropertyAttribute { }
+[AttributeUsage(System.AttributeTargets.Field)] public class FindObjectOfTypeAttribute : AttachPropertyAttribute { }
+
+public class AttachPropertyAttribute : PropertyAttribute { }
+

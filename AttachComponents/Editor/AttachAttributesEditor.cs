@@ -4,10 +4,38 @@ using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 
-public static class AttachAttributesEditor
+public static class AttachAttributesUtils
 {
-    public static Color GUIColorDefault = new Color(.6f, .6f, .6f, 1);
-    public static Color GUIColorNull = new Color(1f, .5f, .5f, 1);
+    private const string k_ContextMenuItemLabel = "CONTEXT/Component/AttachAttributes";
+    private const string k_ToolsMenuItemLabel = "Tools/Nrjwolf/AttachAttributes";
+
+    private const string k_EditorPrefsAttachAttributesGlobal = "IsAttachAttributesActive";
+
+    public static bool IsEnabled
+    {
+        get => EditorPrefs.GetBool(k_EditorPrefsAttachAttributesGlobal, true);
+        set
+        {
+            if (value) EditorPrefs.DeleteKey(k_EditorPrefsAttachAttributesGlobal);
+            else EditorPrefs.SetBool(k_EditorPrefsAttachAttributesGlobal, value); // clear value if it's equals defaultValue
+        }
+    }
+
+    [MenuItem(k_ContextMenuItemLabel)]
+    [MenuItem(k_ToolsMenuItemLabel)]
+    private static void ToggleAction()
+    {
+        IsEnabled = !IsEnabled;
+    }
+
+    [MenuItem(k_ContextMenuItemLabel, true)]
+    [MenuItem(k_ToolsMenuItemLabel, true)]
+    private static bool ToggleActionValidate()
+    {
+        Menu.SetChecked(k_ContextMenuItemLabel, IsEnabled);
+        Menu.SetChecked(k_ToolsMenuItemLabel, IsEnabled);
+        return true;
+    }
 
     public static string GetPropertyType(this SerializedProperty property)
     {
@@ -19,82 +47,107 @@ public static class AttachAttributesEditor
     }
 
     public static Type StringToType(this string aClassName) => System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).First(x => x.IsSubclassOf(typeof(Component)) && x.Name == aClassName);
+}
 
-    public static void OnGUI(Rect position, SerializedProperty property, GUIContent label, Action<GameObject, Type> func)
+/// Base class for Attach Attribute
+public class AttachAttributePropertyDrawer : PropertyDrawer
+{
+    private Color m_GUIColorDefault = new Color(.6f, .6f, .6f, 1);
+    private Color m_GUIColorNull = new Color(1f, .5f, .5f, 1);
+
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        bool isPropertyValuuNull = property.objectReferenceValue == null;
+        // turn off attribute if not active or in Play Mode (imitate as build will works)
+        if (!AttachAttributesUtils.IsEnabled || Application.isPlaying)
+        {
+            property.serializedObject.Update();
+            EditorGUI.PropertyField(position, property, label, true);
+            property.serializedObject.ApplyModifiedProperties();
+            return;
+        }
 
-        // Change gui color
+        bool isPropertyValueNull = property.objectReferenceValue == null;
+
+        // Change GUI color
         var prevColor = GUI.color;
-        GUI.color = isPropertyValuuNull ? AttachAttributesEditor.GUIColorNull : AttachAttributesEditor.GUIColorDefault;
+        GUI.color = isPropertyValueNull ? m_GUIColorNull : m_GUIColorDefault;
 
         // Default draw
         EditorGUI.PropertyField(position, property, label, true);
 
-        // GetComponentInChildren
+        // Get property type and GameObject
         property.serializedObject.Update();
-        if (isPropertyValuuNull)
+        if (isPropertyValueNull)
         {
             var type = property.GetPropertyType().StringToType();
             var go = ((MonoBehaviour)(property.serializedObject.targetObject)).gameObject;
-            func(go, type);
+            UpdateProperty(property, go, type);
         }
 
         property.serializedObject.ApplyModifiedProperties();
         GUI.color = prevColor;
     }
+
+    /// Customize it for each attribute
+    public virtual void UpdateProperty(SerializedProperty property, GameObject go, Type type)
+    {
+        // Do whatever
+        // For example to get component 
+        // property.objectReferenceValue = go.GetComponent(type);
+    }
 }
+
+#region Attribute Editors
 
 /// GetComponent
 [CustomPropertyDrawer(typeof(GetComponentAttribute))]
-public class GetComponentAttributeEditor : PropertyDrawer
+public class GetComponentAttributeEditor : AttachAttributePropertyDrawer
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
     {
-        AttachAttributesEditor.OnGUI(position, property, label, (go, type) =>
-        {
-            property.objectReferenceValue = go.GetComponent(type);
-        });
+        property.objectReferenceValue = go.GetComponent(type);
     }
 }
 
 /// GetComponentInChildren
 [CustomPropertyDrawer(typeof(GetComponentInChildrenAttribute))]
-public class GetComponentInChildrenAttributeEditor : PropertyDrawer
+public class GetComponentInChildrenAttributeEditor : AttachAttributePropertyDrawer
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
     {
-        GetComponentInChildrenAttribute labelAttribute = attribute as GetComponentInChildrenAttribute;
-        AttachAttributesEditor.OnGUI(position, property, label, (go, type) =>
+        GetComponentInChildrenAttribute labelAttribute = (GetComponentInChildrenAttribute)attribute;
+        if (labelAttribute.ChildName == null)
         {
             property.objectReferenceValue = go.GetComponentInChildren(type, labelAttribute.IncludeInactive);
-        });
+        }
+        else
+        {
+            var child = go.transform.Find(labelAttribute.ChildName);
+            if (child != null)
+            {
+                property.objectReferenceValue = child.GetComponent(type);
+            }
+        }
     }
 }
 
 /// AddComponent
 [CustomPropertyDrawer(typeof(AddComponentAttribute))]
-public class AddComponentAttributeEditor : PropertyDrawer
+public class AddComponentAttributeEditor : AttachAttributePropertyDrawer
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
     {
-        AttachAttributesEditor.OnGUI(position, property, label, (go, type) =>
-        {
-            property.objectReferenceValue = go.AddComponent(type);
-        });
+        property.objectReferenceValue = go.AddComponent(type);
     }
 }
 
 /// FindObjectOfType
 [CustomPropertyDrawer(typeof(FindObjectOfTypeAttribute))]
-public class FindObjectOfTypeAttributeEditor : PropertyDrawer
+public class FindObjectOfTypeAttributeEditor : AttachAttributePropertyDrawer
 {
-    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
     {
-        AttachAttributesEditor.OnGUI(position, property, label, (go, type) =>
-        {
-            property.objectReferenceValue = FindObjectsOfTypeByName(property.GetPropertyType());
-        });
+        property.objectReferenceValue = FindObjectsOfTypeByName(property.GetPropertyType());
     }
 
     public UnityEngine.Object FindObjectsOfTypeByName(string aClassName)
@@ -112,3 +165,5 @@ public class FindObjectOfTypeAttributeEditor : PropertyDrawer
         return new UnityEngine.Object();
     }
 }
+
+#endregion
