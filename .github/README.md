@@ -15,6 +15,8 @@ For more information on adding git repositories as a package see the [Git suppor
 
 ### Example
 ``` c#
+ using Nrjwolf.Tools.AttachAttributes;
+
  [FindObjectOfType]
  [SerializeField] private Camera m_Camera;
  
