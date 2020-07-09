@@ -1,5 +1,7 @@
 # Unity auto attach component via attributes
 
+<b>Forum Thread</b> https://forum.unity.com/threads/auto-attach-components-via-attributes.928098/
+
 ### Installation
 
 Add this as a package to your project by adding the below as an entry to the dependencies in the `/Packages/manifest.json` file:
