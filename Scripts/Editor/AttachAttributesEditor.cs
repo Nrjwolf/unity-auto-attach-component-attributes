@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Nrjwolf.Tools.AttachAttributes;
@@ -166,6 +166,17 @@ namespace Nrjwolf.Tools.Editor.AttachAttributes
                 }
             }
             return new UnityEngine.Object();
+        }
+    }
+
+    /// GetComponentInParent
+    [CustomPropertyDrawer(typeof(GetComponentInParent))]
+    public class GetComponentInParentAttributeEditor : AttachAttributePropertyDrawer
+    {
+        public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
+        {
+            if (go.transform.parent != null)
+                property.objectReferenceValue = go.transform.parent.gameObject.GetComponent(type);
         }
     }
     #endregion
