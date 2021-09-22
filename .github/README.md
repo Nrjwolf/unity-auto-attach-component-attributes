@@ -33,6 +33,9 @@ For more information on adding git repositories as a package see the [Git suppor
  
  [AddComponent] // Add component in editor and attach it to field
  [SerializeField] private SpringJoint2D m_SpringJoint2D;
+ 
+ [GetComponentInParent] // Get component from parent
+ [SerializeField] private Canvas m_Canvas;
 ```
 
 Now all components will automatically attach when you select your gameobject in hierarchy
